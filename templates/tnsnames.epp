@@ -18,7 +18,7 @@
      (LOAD_BALANCE = <%= $loadbalance %>)
      (FAILOVER = <%= $failover %>)
      <%- $server.each |$key, $server2| { -%>
-     (ADDRESS = (PROTOCOL = <%= getvar($server2['protocol'].capitalize(),'TCP')(HOST = <%= $server2['host'] %>)(PORT = <%= $server2['port'] %>))
+     (ADDRESS = (PROTOCOL = <%= getvar($server2['protocol'].capitalize(),'TCP') -%> )(HOST = <%= $server2['host'] %>)(PORT = <%= $server2['port'] %>))
      <%- } -%>
     )
   <%- } -%>
