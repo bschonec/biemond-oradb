@@ -3,8 +3,8 @@
        String $loadbalance,
        String $failover,
        String $connect_server,
-       Optional[Integer] $connect_timeout = undef,
-       Optional[Integer] $transport_connect_timeout ,
+       Optional[Integer] $connect_timeout,
+       Optional[Integer] $transport_connect_timeout,
        String $connect_service_name | -%> 
 
 <%= $title %> =
