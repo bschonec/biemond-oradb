@@ -3,10 +3,21 @@
        String $loadbalance,
        String $failover,
        String $connect_server,
-       String $connect_service_name | -%> 
+       Integer $connect_timeout,
+       Integer $transport_connect_timeout,
+       String $connect_service_name 
+
+| -%> 
 
 <%= $title %> =
   (DESCRIPTION =
+  <%- if !empty(connect_timeout) { -%
+    CONNECT_TIMEOUT = <%= connect_timeout %>
+  <%- } -%> 
+  <%- if !empty(connect_timeout) { -%
+    TRANSPORT_CONNECT_TIMEOUT = <%= transport_connect_timeout %>
+  <%- } -%> 
+  
   <%- if $server.size() > 1 { -%> 
     (ADDRESS_LIST=
       (LOAD_BALANCE = <%= $loadbalance %>) 

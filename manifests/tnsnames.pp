@@ -30,6 +30,8 @@
 # @param failover configure failover on the tnsnames entries
 # @param connect_service_name the service name of the database
 # @param connect_server service connection type
+# @param connect_timeout the timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle database
+# @param transport_connect_timeout the transportation timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle Database
 # @param entry_type type of configuration
 #
 define oradb::tnsnames(
@@ -41,6 +43,8 @@ define oradb::tnsnames(
   String $failover                        = 'ON',
   Optional[String] $connect_service_name  = undef,
   String $connect_server                  = 'DEDICATED',
+  Integer $connect_timeout                = undef,
+  Integer $transport_connect_timeout      = undef,
   Enum['tnsnames','listener'] $entry_type = 'tnsnames',
 )
 {
@@ -68,6 +72,8 @@ define oradb::tnsnames(
                                       'failover'             => $failover,
                                       'connect_server'       => $connect_server,
                                       'connect_service_name' => $connect_service_name,
+                                      'connect_timeout'      => $connect_timeout,
+                                      'transport_connect_timeout'      => $transport_connect_timeout,
                                       }),
   }
 }
