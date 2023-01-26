@@ -15,7 +15,6 @@
   <%- if !empty(connect_timeout) { -%>
     TRANSPORT_CONNECT_TIMEOUT = <%= transport_connect_timeout %>
   <%- } -%> 
-  
   <%- if $server.size() > 1 { -%> 
     (ADDRESS_LIST=
       (LOAD_BALANCE = <%= $loadbalance %>) 
