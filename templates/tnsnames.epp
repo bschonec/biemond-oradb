@@ -3,11 +3,9 @@
        String $loadbalance,
        String $failover,
        String $connect_server,
-       Integer $connect_timeout,
-       Integer $transport_connect_timeout,
-       String $connect_service_name 
-
-| -%> 
+       Integer $connect_timeout = undef,
+       Integer $transport_connect_timeout = undef,
+       String $connect_service_name | -%> 
 
 <%= $title %> =
   (DESCRIPTION =
