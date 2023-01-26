@@ -5,6 +5,7 @@
        String $connect_server,
        Optional[Integer] $connect_timeout           = undef,
        Optional[Integer] $transport_connect_timeout = undef,
+       Optional[Integer] $retry_count               = undef,
        String $connect_service_name | -%> 
 
 <%= $title %> =
@@ -14,6 +15,9 @@
   <%- } -%> 
   <%- unless $transport_connect_timeout.empty { -%>
     TRANSPORT_CONNECT_TIMEOUT = <%= $transport_connect_timeout %>
+  <%- } -%> 
+  <%- unless $retry_count.empty { -%>
+    RETRY_COUNT = <%= $retry_count %>
   <%- } -%> 
   <%- if $server.size() > 1 { -%> 
     (ADDRESS_LIST=

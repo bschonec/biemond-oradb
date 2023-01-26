@@ -32,6 +32,7 @@
 # @param connect_server service connection type
 # @param connect_timeout the timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle database
 # @param transport_connect_timeout the transportation timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle Database
+# @param retry_count The number of times an ADDRESS list is traversed before the connection attempt is terminated. The default value is 0.
 # @param entry_type type of configuration
 #
 define oradb::tnsnames(
@@ -45,6 +46,7 @@ define oradb::tnsnames(
   String $connect_server                  = 'DEDICATED',
   Optional[Integer] $connect_timeout                = undef,
   Optional[Integer] $transport_connect_timeout      = undef,
+  Optional[Integer] $retry_count                    = undef,
   Enum['tnsnames','listener'] $entry_type = 'tnsnames',
 )
 {
@@ -74,6 +76,7 @@ define oradb::tnsnames(
                                       'connect_service_name' => $connect_service_name,
                                       'connect_timeout'      => $connect_timeout,
                                       'transport_connect_timeout'      => $transport_connect_timeout,
+                                      'retry_count'          => $retry_count,
                                       }),
   }
 }
