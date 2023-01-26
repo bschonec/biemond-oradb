@@ -43,8 +43,8 @@ define oradb::tnsnames(
   String $failover                        = 'ON',
   Optional[String] $connect_service_name  = undef,
   String $connect_server                  = 'DEDICATED',
-  Integer $connect_timeout                = undef,
-  Integer $transport_connect_timeout      = undef,
+  Optional[Integer] $connect_timeout                = undef,
+  Optional[Integer] $transport_connect_timeout      = undef,
   Enum['tnsnames','listener'] $entry_type = 'tnsnames',
 )
 {
