@@ -9,10 +9,10 @@
 
 <%= $title %> =
   (DESCRIPTION =
-  <%- if !empty(connect_timeout) { -%>
+  <%- unless $connect_timeout.empty { -%>
     CONNECT_TIMEOUT = <%= $connect_timeout %>
   <%- } -%> 
-  <%- if !empty(transport_connect_timeout) { -%>
+  <%- unless $transport_connect_timeout.empty { -%>
     TRANSPORT_CONNECT_TIMEOUT = <%= $transport_connect_timeout %>
   <%- } -%> 
   <%- if $server.size() > 1 { -%> 
