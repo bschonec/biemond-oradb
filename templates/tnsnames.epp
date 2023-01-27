@@ -28,7 +28,9 @@
     (ADDRESS = (PROTOCOL = <%= getvar('server2.protocol','TCP').upcase() -%> )(HOST = <%= $server2['host'] %>)(PORT = <%= $server2['port'] %>))
     <%- } -%> 
     (CONNECT_DATA =
+      <%- unless $connect_server.empty { -%>
       (SERVER = <%= $connect_server %>) 
+      <%- } -%> 
       (SERVICE_NAME = <%= $connect_service_name %>) 
     )   
   )
