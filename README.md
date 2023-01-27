@@ -834,6 +834,28 @@ or delete a database
       require            => Oradb::Dbactions['start oraDb'],
     }
 
+    Hiera Example:
+    
+    oradb::tnsnames:
+      single_server.example.com:
+        oracle_home: /oracle/product/11.2/db
+        user: oracle
+        group: oracle
+        connect_service_name: single_server
+        server:
+          myserver1:
+            host: single_server.example.com
+            port: 1556
+      load_balanced.example.com:
+        oracle_home: /oracle/product/11.2/db
+        connect_service_name: load_balanced
+        server:
+          myserver1:
+            host: server1.example.com
+            port: 1700
+          myserver2:
+            host: server1.example.com
+            port: 1700
 
 ## Grid install with ASM
 
