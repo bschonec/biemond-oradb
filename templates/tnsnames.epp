@@ -11,13 +11,13 @@
 <%= $title %> =
   (DESCRIPTION =
   <%- unless $connect_timeout.empty { -%>
-    CONNECT_TIMEOUT = <%= $connect_timeout %>
+    (CONNECT_TIMEOUT = <%= $connect_timeout %>)
   <%- } -%> 
   <%- unless $transport_connect_timeout.empty { -%>
-    TRANSPORT_CONNECT_TIMEOUT = <%= $transport_connect_timeout %>
+    (TRANSPORT_CONNECT_TIMEOUT = <%= $transport_connect_timeout %>)
   <%- } -%> 
   <%- unless $retry_count.empty { -%>
-    RETRY_COUNT = <%= $retry_count %>
+    (RETRY_COUNT = <%= $retry_count %>)
   <%- } -%> 
   <%- if $server.size() > 1 { -%> 
     (ADDRESS_LIST=
