@@ -20,13 +20,16 @@
     (RETRY_COUNT = <%= $retry_count %>)
   <%- } -%> 
   <%- if $server.size() > 1 { -%> 
-    (ADDRESS_LIST=
+    (ADDRESS_LIST =
       (LOAD_BALANCE = <%= $loadbalance %>) 
       (FAILOVER = <%= $failover %>) 
   <%- } -%> 
     <%- $server.each |$key, $server2| { -%> 
     (ADDRESS = (PROTOCOL = <%= getvar('server2.protocol','TCP').upcase() -%> )(HOST = <%= $server2['host'] %>)(PORT = <%= $server2['port'] %>))
     <%- } -%> 
+  <%- if $server.size() > 1 { -%> 
+    )
+  <%- } -%> 
     (CONNECT_DATA =
       <%- unless $connect_server.empty { -%>
       (SERVER = <%= $connect_server %>) 

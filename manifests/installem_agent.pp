@@ -68,15 +68,15 @@
 # @param manage_curl download curl package
 # @param ignore_sys_prerequisite skip operating system verification steps prior to installation
 #
-define oradb::installem_agent(
+define oradb::installem_agent (
   Enum['12.1.0.3', '12.1.0.4', '12.1.0.5', '13.2.0.0', '13.3.0.0', '13.4.0.0'] $version  = '12.1.0.5',
   Enum['agentPull', 'agentDeploy'] $install_type     = undef,
   String $install_version                            = '12.1.0.5.0',
   String $install_platform                           = 'Linux x86-64',
   String $source                                     = undef, # 'https://<OMS_HOST>:<OMS_PORT>/em/install/getAgentImage'|'/tmp/12.1.0.4.0_AgentCore_226_Linux_x64.zip'
-  Optional[String] $ora_inventory_dir                = undef,
-  String $oracle_base_dir                            = undef,
-  String $agent_base_dir                             = undef,
+  Optional[Stdlib::Absolutepath] $ora_inventory_dir  = undef,
+  Stdlib::Absolutepath $oracle_base_dir              = undef,
+  Stdlib::Absolutepath $agent_base_dir               = undef,
   String $agent_instance_home_dir                    = undef,
   String $agent_registration_password                = undef,
   Integer $agent_port                                = 1830,
@@ -90,13 +90,10 @@ define oradb::installem_agent(
   String $download_dir                               = lookup('oradb::download_dir'),
   Boolean $log_output                                = false,
   Boolean $ignore_sys_prerequisite                   = false,
-  String $oracle_hostname                            = lookup('oradb::oracle_hostname',{default_value => $::fqdn}),
+  String $oracle_hostname                            = lookup('oradb::oracle_hostname', { default_value => $facts['networking']['fqdn'] }),
   Boolean $manage_curl                               = true,
-)
-{
-
+) {
   # check if the oracle software already exists
-  validate_absolute_path( $agent_base_dir )
   $found = oradb::oracle_exists( $agent_base_dir )
 
   if $found == undef {
@@ -105,21 +102,19 @@ define oradb::installem_agent(
     if ( $found ) {
       $continue = false
     } else {
-      notify {"oradb::installem_agent ${agent_base_dir} does not exists":}
+      notify { "oradb::installem_agent ${agent_base_dir} does not exists": }
       $continue = true
     }
   }
 
-  validate_absolute_path($oracle_base_dir)
   if $ora_inventory_dir == undef {
     $ora_inventory = oradb::cleanpath("${oracle_base_dir}/../oraInventory")
   } else {
-    validate_absolute_path($ora_inventory_dir)
     $ora_inventory = "${ora_inventory_dir}/oraInventory"
   }
 
   # setup oracle base with the right permissions
-  db_directory_structure{"oracle em agent structure ${version}":
+  db_directory_structure { "oracle em agent structure ${version}":
     ensure            => present,
     oracle_base_dir   => $oracle_base_dir,
     ora_inventory_dir => $ora_inventory,
@@ -129,20 +124,19 @@ define oradb::installem_agent(
   }
 
   if ( $continue ) {
-
     $exec_path = lookup('oradb::exec_path')
 
     # check oraInst
-    oradb::utils::dborainst{"em agent orainst ${version}":
+    oradb::utils::dborainst { "em agent orainst ${version}":
       ora_inventory_dir => $ora_inventory,
       os_group          => $group,
     }
 
-    if ( $source == undef or is_string($source) == false) {fail('You must specify source') }
-    if ( $agent_base_dir == undef or is_string($agent_base_dir) == false) {fail('You must specify agent_base_dir') }
-    if ( $oracle_base_dir == undef or is_string($oracle_base_dir) == false) {fail('You must specify oracle_base_dir') }
-    if ( $agent_registration_password == undef or is_string($agent_registration_password) == false) {fail('You must specify agent_registration_password') }
-    if ( $em_upload_port == undef or is_numeric($em_upload_port) == false) {fail('You must specify em_upload_port') }
+    if ( $source == undef or is_string($source) == false) { fail('You must specify source') }
+    if ( $agent_base_dir == undef or is_string($agent_base_dir) == false) { fail('You must specify agent_base_dir') }
+    if ( $oracle_base_dir == undef or is_string($oracle_base_dir) == false) { fail('You must specify oracle_base_dir') }
+    if ( $agent_registration_password == undef or is_string($agent_registration_password) == false) { fail('You must specify agent_registration_password') }
+    if ( $em_upload_port == undef or is_numeric($em_upload_port) == false) { fail('You must specify em_upload_port') }
 
     if ( $ignore_sys_prerequisite ) {
       $param_ignore_prereq='-ignorePrereqs'
@@ -152,9 +146,8 @@ define oradb::installem_agent(
 
     # chmod +x /tmp/AgentPull.sh
     if ( $install_type  == 'agentPull') {
-
-      if ( $sysman_user == undef or is_string($sysman_user) == false) {fail('You must specify sysman_user') }
-      if ( $sysman_password == undef or is_string($sysman_password) == false) {fail('You must specify sysman_password') }
+      if ( $sysman_user == undef or is_string($sysman_user) == false) { fail('You must specify sysman_user') }
+      if ( $sysman_password == undef or is_string($sysman_password) == false) { fail('You must specify sysman_password') }
 
       if $manage_curl and !defined(Package['curl']) {
         package { 'curl':
@@ -170,7 +163,7 @@ define oradb::installem_agent(
         user      => $user,
         group     => $group,
         require   => [Package['curl'],
-                      Db_directory_structure["oracle em agent structure ${version}"],],
+        Db_directory_structure["oracle em agent structure ${version}"],],
       }
 
       exec { "chmod ${title}":
@@ -184,15 +177,15 @@ define oradb::installem_agent(
       }
 
       file { "${download_dir}/em_agent.properties":
-        ensure  => present,
+        ensure  => file,
         content => epp('oradb/em_agent_pull.properties.epp', {
-                        'agent_instance_home_dir'     => $agent_instance_home_dir,
-                        'oms_host'                    => $oms_host,
-                        'oms_port'                    => $oms_port,
-                        'agent_port'                  => $agent_port,
-                        'em_upload_port'              => $em_upload_port,
-                        'agent_registration_password' => $agent_registration_password,
-                        'agent_base_dir'              => $agent_base_dir }),
+          'agent_instance_home_dir'     => $agent_instance_home_dir,
+          'oms_host'                    => $oms_host,
+          'oms_port'                    => $oms_port,
+          'agent_port'                  => $agent_port,
+          'em_upload_port'              => $em_upload_port,
+          'agent_registration_password' => $agent_registration_password,
+        'agent_base_dir'                => $agent_base_dir }),
         mode    => '0755',
         owner   => $user,
         group   => $group,
@@ -209,10 +202,10 @@ define oradb::installem_agent(
         user      => $user,
         group     => $group,
         require   => [Exec["agentPull ${title}"],
-                      Exec["chmod ${title}"],
-                      File["${download_dir}/em_agent.properties"],
-                      Db_directory_structure["oracle em agent structure ${version}"],
-                      Oradb::Utils::Dborainst["em agent orainst ${version}"],],
+          Exec["chmod ${title}"],
+          File["${download_dir}/em_agent.properties"],
+          Db_directory_structure["oracle em agent structure ${version}"],
+        Oradb::Utils::Dborainst["em agent orainst ${version}"],],
       }
 
       if ($version in ['13.2.0.0', '13.3.0.0', '13.4.0.0']) {
@@ -230,9 +223,7 @@ define oradb::installem_agent(
         logoutput => $log_output,
         require   => Exec["agentPull execute ${title}"],
       }
-
     } elsif ( $install_type  == 'agentDeploy') {
-
       if !defined(Package['unzip']) {
         package { 'unzip':
           ensure => present,
@@ -247,7 +238,7 @@ define oradb::installem_agent(
         user      => $user,
         group     => $group,
         require   => [Db_directory_structure["oracle em agent structure ${version}"],
-                      Oradb::Utils::Dborainst["em agent orainst ${version}"],],
+        Oradb::Utils::Dborainst["em agent orainst ${version}"],],
       }
 
       if ( $agent_instance_home_dir == undef ) {
@@ -264,8 +255,8 @@ define oradb::installem_agent(
         user      => $user,
         group     => $group,
         require   => [Exec["extract ${source} ${title}"],
-                      Db_directory_structure["oracle em agent structure ${version}"],
-                      Oradb::Utils::Dborainst["em agent orainst ${version}"],],
+          Db_directory_structure["oracle em agent structure ${version}"],
+        Oradb::Utils::Dborainst["em agent orainst ${version}"],],
       }
 
       if ($version in ['13.2.0.0', '13.3.0.0', '13.4.0.0']) {
@@ -283,7 +274,6 @@ define oradb::installem_agent(
         logoutput => $log_output,
         require   => Exec["agentDeploy execute ${title}"],
       }
-
     } else {
       fail('Unrecognized install_type, use agentDeploy or agentPull' )
     }
