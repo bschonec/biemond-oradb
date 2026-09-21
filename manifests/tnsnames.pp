@@ -34,12 +34,14 @@
 # @param transport_connect_timeout the transportation timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle Database
 # @param retry_count The number of times an ADDRESS list is traversed before the connection attempt is terminated. The default value is 0.
 # @param entry_type type of configuration
+# @param mode file mode of tnsnames.ora file
 #
-define oradb::tnsnames(
+define oradb::tnsnames (
   String $oracle_home                          = undef,
   String $user                                 = lookup('oradb::user'),
   String $group                                = lookup('oradb::group'),
-  Hash   $server                               = { myserver => { host => undef, port => '1521', protocol => 'TCP' }},
+  Stdlib::Filemode $mode                       = '0774',
+  Hash   $server                               = { myserver => { host => undef, port => '1521', protocol => 'TCP' } },
   String $loadbalance                          = 'ON',
   String $failover                             = 'ON',
   Optional[String] $connect_service_name       = undef,
@@ -48,14 +50,13 @@ define oradb::tnsnames(
   Optional[Integer] $transport_connect_timeout = undef,
   Optional[Integer] $retry_count               = undef,
   Enum['tnsnames','listener'] $entry_type      = 'tnsnames',
-)
-{
+) {
   if ! defined(Concat["${oracle_home}/network/admin/tnsnames.ora"]) {
     concat { "${oracle_home}/network/admin/tnsnames.ora":
       ensure         => present,
       owner          => $user,
       group          => $group,
-      mode           => '0774',
+      mode           => $mode,
       ensure_newline => true,
       warn           => true,
     }
@@ -69,15 +70,15 @@ define oradb::tnsnames(
 
   concat::fragment { $title:
     target  => "${oracle_home}/network/admin/tnsnames.ora",
-    content => epp($template_path , { 'title'                     => $title,
-                                      'server'                    => $server,
-                                      'loadbalance'               => $loadbalance,
-                                      'failover'                  => $failover,
-                                      'connect_server'            => $connect_server,
-                                      'connect_service_name'      => $connect_service_name,
-                                      'connect_timeout'           => $connect_timeout,
-                                      'transport_connect_timeout' => $transport_connect_timeout,
-                                      'retry_count'               => $retry_count,
-                                      }),
+    content => epp($template_path , { 'title' => $title,
+      'server'                                => $server,
+      'loadbalance'                           => $loadbalance,
+      'failover'                              => $failover,
+      'connect_server'                        => $connect_server,
+      'connect_service_name'                  => $connect_service_name,
+      'connect_timeout'                       => $connect_timeout,
+      'transport_connect_timeout'             => $transport_connect_timeout,
+      'retry_count'                           => $retry_count,
+    }),
   }
 }

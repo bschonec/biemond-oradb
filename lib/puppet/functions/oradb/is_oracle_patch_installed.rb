@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'puppet/util/log'
 # check is Oracle patch is already installed
 Puppet::Functions.create_function(:'oradb::is_oracle_patch_installed') do
-
   # check is Oracle patch is already installed
   # @param oracle_home_path full path to the oracle home directory
   # @param patch_id the patch id number
@@ -18,29 +19,28 @@ Puppet::Functions.create_function(:'oradb::is_oracle_patch_installed') do
     log 'start of function'
     scope = closure_scope
     patches = scope['facts']['opatch_patches']
-    if patches == 'NotFound' or patches.nil?
+    if (patches == 'NotFound') || patches.nil?
       log 'return false opatch_patches is empty'
       return false
-    end  
+    end
     if patches.key?(oracle_home_path)
       found = patches[oracle_home_path].find { |h| h['patch_id'] == patch_id }
       log("#{oracle_home_path} check for #{patch_id} found #{found}")
       return true if found
-      return false
+
     else
       log("#{oracle_home_path} not found in patches facts, return false")
-      return false
-    end  
-    log 'end of function return false'
+    end
     return false
+    log 'end of function return false'
+    false
   end
 
   def log(msg)
     Puppet::Util::Log.create(
-      :level   => :info,
-      :message => msg,
-      :source  => 'oradb::is_oracle_patch_installed'
+      level: :info,
+      message: msg,
+      source: 'oradb::is_oracle_patch_installed'
     )
   end
-
 end

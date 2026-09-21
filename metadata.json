@@ -4,9 +4,9 @@
   "author": "Edwin Biemond",
   "summary": "Oracle Database 11.2, 12.1, 12.2 & 18 for Linux & Solaris plus ASM, Client, Enterprise Manager & GoldenGate",
   "license": "Apache-2.0",
-  "source": "https://github.com/biemond/biemond-oradb",
-  "project_page": "https://github.com/biemond/biemond-oradb",
-  "issues_url": "https://github.com/biemond/biemond-oradb/issues",
+  "source": "https://github.com/bschonec/biemond-oradb",
+  "project_page": "https://github.com/bschonec/biemond-oradb",
+  "issues_url": "https://github.com/bschonec/biemond-oradb/issues",
   "dependencies": [
     {
       "name": "puppetlabs/concat",
@@ -21,63 +21,26 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "4",
-        "5",
-        "6",
-        "7"
+        "7",
+        "8",
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "4",
-        "5",
-        "6",
-        "7"
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "4",
-        "5",
-        "6",
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "Scientific",
-      "operatingsystemrelease": [
-        "4",
-        "5",
-        "6"
-      ]
-    },
-    {
-      "operatingsystem": "SLES",
-      "operatingsystemrelease": [
-        "11 SP1"
-      ]
-    },
-    {
-      "operatingsystem": "Debian",
-      "operatingsystemrelease": [
-        "6",
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "10.04",
-        "12.04"
-      ]
-    },
-    {
-      "operatingsystem": "Solaris",
-      "operatingsystemrelease": [
-        "10",
-        "11"
+        "7",
+        "8",
+        "9",
+        "10"
       ]
     }
   ],

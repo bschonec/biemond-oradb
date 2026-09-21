@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'pathname'
 # clean and return the path
 Puppet::Functions.create_function(:'oradb::cleanpath') do
-
   # clean and return the path
   # @param path some directory
   # @return [String] Return the directory

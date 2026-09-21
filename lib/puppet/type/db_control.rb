@@ -1,28 +1,24 @@
+# frozen_string_literal: true
+
 module Puppet
-  Type::newtype(:db_control) do
+  Type.newtype(:db_control) do
     desc 'control the database instance state like running,stop,restart'
 
     newproperty(:ensure) do
       desc 'Whether to do something.'
 
-      newvalue(:start, :event => :instance_running) do
-        unless resource[:refreshonly] == :true
-          provider.start
-        end
+      newvalue(:start, event: :instance_running) do
+        provider.start unless resource[:refreshonly] == :true
       end
 
-      newvalue(:stop, :event => :instance_stop) do
-        unless resource[:refreshonly] == :true
-          provider.stop
-        end
+      newvalue(:stop, event: :instance_stop) do
+        provider.stop unless resource[:refreshonly] == :true
       end
 
-      newvalue(:mount, :event => :instance_running) do
-        unless resource[:refreshonly] == :true
-          provider.mount
-        end
+      newvalue(:mount, event: :instance_running) do
+        provider.mount unless resource[:refreshonly] == :true
       end
-    
+
       aliasvalue(:running, :start)
       aliasvalue(:abort, :stop)
       aliasvalue(:stopped, :stop)
@@ -34,7 +30,7 @@ module Puppet
       def sync
         event = super()
 
-        if property = @resource.property(:enable)
+        if (property = @resource.property(:enable))
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
@@ -93,6 +89,5 @@ module Puppet
       Puppet.info 'db_control refresh'
       provider.restart
     end
-
   end
 end
