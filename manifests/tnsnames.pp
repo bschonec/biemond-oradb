@@ -34,6 +34,7 @@
 # @param transport_connect_timeout the transportation timeout duration in seconds for a client to establish an Oracle Net connection to an Oracle Database
 # @param retry_count The number of times an ADDRESS list is traversed before the connection attempt is terminated. The default value is 0.
 # @param entry_type type of configuration
+# @param order Override the ordering of a single entry.
 #
 define oradb::tnsnames(
   String $oracle_home                          = undef,
@@ -48,6 +49,7 @@ define oradb::tnsnames(
   Optional[Integer] $transport_connect_timeout = undef,
   Optional[Integer] $retry_count               = undef,
   Enum['tnsnames','listener'] $entry_type      = 'tnsnames',
+  Integer $order                     = 99,
 )
 {
   if ! defined(Concat["${oracle_home}/network/admin/tnsnames.ora"]) {
@@ -69,6 +71,7 @@ define oradb::tnsnames(
 
   concat::fragment { $title:
     target  => "${oracle_home}/network/admin/tnsnames.ora",
+    order   => $order,
     content => epp($template_path , { 'title'                     => $title,
                                       'server'                    => $server,
                                       'loadbalance'               => $loadbalance,
