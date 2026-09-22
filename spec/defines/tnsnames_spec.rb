@@ -30,6 +30,7 @@ describe 'oradb::tnsnames' do
             target: '/tmp/network/admin/tnsnames.ora',
             content: %r{
             ^test =$
+            ^\s{2} \(DESCRIPTION =$
             }
           )
         }
